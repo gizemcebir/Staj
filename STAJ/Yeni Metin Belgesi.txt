@@ -1,0 +1,94 @@
+    KNN CASE ÖZETİ
+1️⃣ Problem: KNN ve RkNN’de k Seçimi Sorunu
+KNN (k-Nearest Neighbor): Bir noktayı sınıflandırırken en yakın k komşusuna bakar.
+
+RkNN (Reverse k-Nearest Neighbor): Bir noktanın başka hangi noktalar tarafından en yakın komşu olarak görüldüğüne bakar.
+
+Sorun:
+
+k değeri küçük seçilirse → Gürültü veriler (noise) sonucu bozabilir.
+
+k değeri büyük seçilirse → Kümeler arasındaki sınırlar kaybolabilir.
+
+k değeri genellikle deneme-yanılma ile belirlenir, bu da zaman alır ve veri setine özel ayar gerektirir.
+
+2️⃣ Doğal Komşu (NaN) Fikri
+Makale, k parametresini tamamen ortadan kaldırmak için “doğal komşu” kavramını öneriyor.
+
+Temel ilham kaynağı: İnsan toplumundaki karşılıklı arkadaşlık ilişkisi.
+
+İnsan toplumu analojisi:
+Karşılıklı arkadaşlık: A, B’yi arkadaş olarak görüyor ve B de A’yı arkadaş olarak görüyorsa → onlar gerçek arkadaş (doğal komşu).
+
+Tek taraflı arkadaşlık: A, C’yi arkadaş olarak görüyor ama C, A’yı görmüyorsa → gerçek arkadaş sayılmaz.
+
+Her bireyin arkadaş listesi, yakınlığa göre sıralı.
+
+Arama “tur” sayısı arttıkça (r değeri), daha uzak kişiler de listeye eklenir.
+
+“Stranger” (yabancı) durumu: Bir noktaya herkes uzaksa, o nokta gürültü (noise) olarak kabul edilir.
+
+3️⃣ NaN Yönteminin Mantığı
+Veri setindeki her nokta, en yakın komşularını sırayla (r=1, r=2, r=3, ...) arar.
+
+İki nokta karşılıklı olarak birbirini komşu olarak bulursa, aralarına NaN Edge eklenir.
+
+Arama turları devam eder ve bir noktaya komşusu olmayan kalmayana kadar sürer.
+
+Stable Searching State (Kararlı Arama Durumu): Her normal noktanın en az bir doğal komşusu olduğunda arama durur.
+
+Bu duruma ulaşıldığında, arama tur sayısı λ (NaNE) olur.
+
+4️⃣ Tanımlar
+Natural Neighbor Eigenvalue (NaNE) λ: Aramanın durduğu tur sayısı. Bu değer veri seti için en uygun k olarak düşünülebilir.
+
+Natural Neighbor (NN): Kararlı arama durumunda karşılıklı olarak birbirini seçen noktalar.
+
+Noise: λ turlarından sonra bile komşusu olmayan noktalar.
+
+Natural Neighborhood Graph (NaNG): Doğal komşuluk ilişkilerini gösteren grafik.
+
+5️⃣ Algoritma (Özet)
+Girdi: Veri seti X
+Çıktı: λ (NaNE), komşuluk grafiği (NaNG)
+
+r=1 ile başla.
+
+Tüm noktalar için r’inci en yakın komşuyu bul.
+
+Eğer karşılıklı komşuluk varsa grafiğe ekle.
+
+Komşusu olmayan nokta kalmadığında dur.
+
+λ = r - 1 olarak kaydet.
+
+λ, veri setine özgü optimum k değeridir.
+
+6️⃣ Özellikler
+Parametresiz: k önceden verilmez, otomatik bulunur.
+
+Ölçekten bağımsız: Farklı boyutlardaki veri setlerinde çalışır.
+
+Noise tespiti: Gürültü noktaları otomatik bulunur.
+
+Dinamik komşu sayısı: Her noktanın komşu sayısı farklı olabilir (küme merkezindekiler fazla, kenardakiler az).
+
+7️⃣ Performans Karşılaştırmaları
+KNN + NaNE: KNN’e λ değeri verildiğinde, sabit k yerine veri setine uygun k kullanılır.
+
+Outlier detection (aykırı değer tespiti): NaN yöntemi, LOF ve INFLO gibi yöntemlerden daha iyi sonuç veriyor.
+
+Classification (sınıflandırma): NaNE ile belirlenen k değeri, çoğu zaman k=√n ve sabit k’den daha iyi doğruluk sağlıyor.
+
+Clustering (kümeleme): Spiral, compound gibi zor veri setlerinde kısa devre hatalarını önlüyor.
+
+8️⃣ Kullanım Alanları
+Sınıflandırma (KNN, ENN)
+
+Aykırı değer tespiti
+
+Kümeleme
+
+Görüntü işleme, yüz tanıma
+
+Parametre seçimi gerektiren diğer k-komşuluk tabanlı yöntemler
